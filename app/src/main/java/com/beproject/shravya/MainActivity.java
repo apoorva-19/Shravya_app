@@ -1,6 +1,7 @@
 package com.beproject.shravya;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.adhyaya_list);
         apiInterface = APIClient.getApiClient().create(ApiInterface.class);
@@ -40,14 +42,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<NumberClass> call, Response<NumberClass> response) {
                 num = response.body().getNumber();
-                Log.d("SABARI WAS HERE", "onResponse: " + num);
                 populateListView(num, adhyaya_list);
 
             }
 
             @Override
             public void onFailure(Call<NumberClass> call, Throwable t) {
-                Log.d("SABARI WAS HERE", "no value in number");
             }
         });
 
@@ -64,11 +64,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void populateListView(int val, ArrayList<String> adhyaya_list) {
-        Log.d("Val", "onCreate:value of val "+val);
         for (int i = 1; i <= val; i++)
             adhyaya_list.add("Adhyaya " + i);
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,adhyaya_list);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,adhyaya_list);
 
         listView.setAdapter(arrayAdapter);
     }

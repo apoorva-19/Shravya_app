@@ -1,6 +1,7 @@
 package com.beproject.shravya;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,10 +30,11 @@ public class ShlokaList extends AppCompatActivity {
     private Integer information;
     private ApiInterface apiInterface;
     private List<InfoClass> Shlokas;
-    private int posn_of_shloka;
+//    private int posn_of_shloka;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_shloka_list);
         shlokaList = findViewById(R.id.shlokaList);
         final Intent intent = getIntent();
@@ -72,34 +74,32 @@ public class ShlokaList extends AppCompatActivity {
         shlokaList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent next_intent = new Intent(ShlokaList.this, Shloka.class);
                 Bundle bundle = new Bundle();
-                posn_of_shloka = position+1;
-                String shloka_to_print = findRightShloka(Shlokas);
-                bundle.putInt("shlokaNo", position + 1);
-                bundle.putInt("adhyayaNo", adhyayaNo);
+                int posn_of_shloka = position+1;
+                String shloka_to_print = findRightShloka(posn_of_shloka,Shlokas);
                 bundle.putString("Shloka_display", shloka_to_print);
                 next_intent.putExtras(bundle);
                 startActivity(next_intent);
             }
         });
     }
-    public String findRightShloka(List<InfoClass> Shlokas){
-
+    public String findRightShloka(int posn_of_shloka, List<InfoClass> Shlokas){
         for(int i=0; i<=Shlokas.size(); i++) {
             InfoClass s = Shlokas.get(i);
             if(s.getVerse() == posn_of_shloka)
+            {
                 return s.getOrg_shloka();
+            }
+
         }
         return null;
     }
     public void populateListView(int val, ArrayList<String> shloka_List) {
-        Log.d("Val", "onCreate:value of val "+val);
         for (int i = 1; i <= val; i++)
             shloka_List.add("Shloka " + i);
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,shloka_List);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,shloka_List);
 
         shlokaList.setAdapter(arrayAdapter);
     }
